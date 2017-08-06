@@ -1,0 +1,21 @@
+---
+# Including variable
+- name: Including MISP variables.
+  include_vars: "misp.yml"
+
+- name: Include Apache variables.
+  include_vars: "apache.yml"
+
+- name: Include SSL variables.
+  include_vars: "ssl-certificate.yml"
+  
+- name: Include OS variables.
+  include_vars: "{{ ansible_distribution|lower }}{{ ansible_distribution_version }}.yml"
+  
+# Generate self-signed SSL cert
+- include: "create-ssl-cert.yml"
+  static: no
+
+# Running installation
+- include: "install-{{ ansible_distribution|lower }}{{ ansible_distribution_version }}.yml"
+  static: no

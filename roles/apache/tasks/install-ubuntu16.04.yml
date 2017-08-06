@@ -1,0 +1,60 @@
+---
+- name: Update package cache
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: Installing apache packages
+  apt: "name={{ item }} state=installed"
+  with_items: "{{ apache_packages }}"
+
+
+- name: Activate SSL module
+  apache2_module:
+    state: present
+    name: ssl
+ 
+- name: Activate Rewrite module
+  apache2_module:
+    state: present
+    name: rewrite
+
+- name: Deactivate Rewrite module
+  apache2_module:
+    state: absent
+    name: status
+
+- name: Add MISP directory to apache conf
+  lineinfile:
+    dest: /etc/apache2/apache2.conf
+    regexp: "^<Directory /opt/misp-server/>"
+    line: "<Directory /opt/misp-server/>\n\tOptions Indexes FollowSymLinks\n\tAllowOverride None\n\tRequire all granted\n</Directory>"
+
+- name: Add apache vhosts configuration.
+  template:
+    src: "{{ misp_vhosts_template }}"
+    dest: "{{ apache_conf_path }}/sites-available/{{ misp_vhosts_filename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart apache2
+  
+- name: Add apache vhosts configuration.
+  template:
+    src: "{{ misp_listen_template }}"
+    dest: "{{ apache_conf_path }}/sites-available/{{ misp_listen_filename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart apache2
+
+- name: Remove default vhost
+  file:
+    path: "{{ apache_conf_path }}/sites-enabled/{{ apache_default_vhost_filename }}"
+    state: absent
+  notify: Restart apache2
+
+- name: Add vhost symlink to enable site
+  file:
+    src: "{{ apache_conf_path }}/sites-available/{{ misp_vhosts_filename }}"
+    dest: "{{ apache_conf_path }}/sites-enabled/{{ misp_vhosts_filename }}"
+    state: link
+  notify: Restart apache2

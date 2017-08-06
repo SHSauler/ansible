@@ -1,0 +1,6 @@
+---
+apache_listen_ip: "*"
+apache_http_port: 80
+apache_https_port: 443
+
+apache_default_vhost_filename: 000-default.conf

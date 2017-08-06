@@ -1,0 +1,18 @@
+---
+misp_fqdn: "misp.local"
+misp_servername: "misp.local"
+
+misp_http_port: 80
+misp_https_port: 443
+
+misp_vhosts_template: "misp-ssl.conf.j2"
+misp_vhosts_filename: "misp-ssl.conf"
+
+misp_listen_template: "listen.conf.j2"
+misp_listen_filename: "listen.conf"
+
+misp_ssl_certificate_path: "/etc/ssl/private"
+misp_ssl_keyfile: "server.key"
+misp_ssl_crtfile: "server.crt"
+
+misp_root_dir: "/opt/misp-server/misp/app/webroot"

@@ -1,0 +1,6 @@
+---
+ssl_crtpath: "/etc/ssl/private"
+ssl_keyfile: "{{ misp_servername }}.key"
+ssl_crtfile: "{{ misp_servername }}.crt"
+ssl_subject: "/C=NA/ST=NA/L=NA/O=Organization/CN={{ misp_servername }}"
+ssl_days: 3650

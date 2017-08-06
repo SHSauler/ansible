@@ -1,0 +1,5 @@
+---
+  - name: Create self-signed SSL certificate
+    command: openssl req -new -nodes -x509 -subj "{{ ssl_subject }}" -days {{ ssl_days }} -newkey rsa:4096 -keyout {{ ssl_crtpath }}/{{ ssl_keyfile }} -out {{ ssl_crtpath }}/{{ ssl_crtfile }} -extensions v3_ca
+    args:
+      creates: "{{ ssl_crtpath }}/{{ ssl_crtfile }}"

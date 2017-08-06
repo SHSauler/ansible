@@ -1,0 +1,31 @@
+<VirtualHost {{ apache_listen_ip }}:{{ apache_http_port }}>
+        ServerName {{ misp_servername }}
+        
+        Redirect permanent / https://{{ misp_fqdn }}
+
+        LogLevel warn
+        ErrorLog /var/log/apache2/misp.local_error.log
+        CustomLog /var/log/apache2/misp.local_access.log combined
+        ServerSignature Off
+</VirtualHost>
+
+<VirtualHost {{ apache_listen_ip }}:{{ apache_https_port }}>
+        ServerAdmin admin@{{ misp_fqdn }}
+        ServerName {{ misp_fqdn }}
+        DocumentRoot {{ misp_root_dir }}
+        <Directory {{ misp_root_dir }}>
+                Options -Indexes
+                AllowOverride all
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        SSLEngine On
+        SSLCertificateFile {{ ssl_crtpath }}/{{ ssl_crtfile }}
+        SSLCertificateKeyFile {{ ssl_crtpath }}/{{ ssl_keyfile }}
+
+        LogLevel warn
+        ErrorLog /var/log/apache2/misp.local_error.log
+        CustomLog /var/log/apache2/misp.local_access.log combined
+        ServerSignature Off
+</VirtualHost>
