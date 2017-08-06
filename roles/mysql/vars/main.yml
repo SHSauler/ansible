@@ -1,2 +1,4 @@
 ---
 # Variables associated with this role
+mysql_root_new_pass: "LeavingThisDefaultIsHighlyUnsafe!"
+mysql_root_old_pass: ""

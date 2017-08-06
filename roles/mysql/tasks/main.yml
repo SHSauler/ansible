@@ -1,27 +1,23 @@
 ---
-
-- name: mysql-server - installation
-  apt:
-    pkg: mysql-server-5.6
-    state: present
+- name: mariadb-server (MySQL replacement) - installation
+  action: apt pkg={{item}} state=installed
+  with_items:
+       - mariadb-client
+       - mariadb-server
 
 - name: python-mysqldb - installation
   apt:
     pkg: python-mysqldb
     state: present
 
-- name: MySQL - Update mysql root passwd
-  mysql_user:
-    name: root 
-    host: "{{item}}" 
-    password: "{{mysql_root_new_pass}}"
-    login_user: root
-    login_password: "{{mysql_root_old_pass}}"
-  with_items:
-    - "{{ansible_hostname}}"
-    - 127.0.0.1
-    - ::1
-    - localhost
+- name: Set database root password
+  mysql_user: name=root
+              host="localhost"
+              password="{{ mysql_root_new_pass }}"
+              check_implicit_admin=yes
+              login_user="root"
+              login_password="{{ mysql_root_old_pass }}"
+              state=present
   when: mysql_root_new_pass != mysql_root_old_pass and
         mysql_root_new_pass != ""
 
@@ -38,6 +34,12 @@
     state: absent
     login_user: root
     login_password: "{{mysql_root_new_pass}}"
+    
+- name: Disallow remote login to root
+  command: 'mysql -NBe "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User='{{mysql_root_new_pass}}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')
+  changed_when: false
 
 - name: Restart MySQL
   service:
