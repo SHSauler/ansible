@@ -1,2 +1,8 @@
 ---
-
+proxy_host: ""
+proxy_port: ""
+servername: "misp.local"
+mysql_root_old_pass: ""
+mysql_root_new_pass: "LeavingThisDefaultIsHighlyUnsafe!"
+mysql_misp_password: ""
+enable_auto_backup: "yes"
